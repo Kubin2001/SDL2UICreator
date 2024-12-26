@@ -2,8 +2,8 @@
 #include "SDL.h"
 
 namespace Global {
-	int windowWidth = 800;
-	int windowHeight = 600;
+	int windowWidth = 1400;
+	int windowHeight = 800;
 	unsigned long long int frameCounter = 0;
 	bool status = true;
 	short frameDelay = 16;
@@ -11,4 +11,5 @@ namespace Global {
 	unsigned int LogicTimeEnd = 0;
 	unsigned int RenderingTimeEnd = 0;
 	unsigned char defaultDrawColor[3] = { 0,0,0 };
+	unsigned int inputDelay = 0;
 }

@@ -6,6 +6,7 @@
 #include <map>
 #include "Font.h"
 #include "TextureManager.h"
+#include "unordered_map"
 
 class TemplateUIElement {
     private:
@@ -119,6 +120,10 @@ class UI
     std::vector<MassageBox*> MassageBoxes;
     std::vector<InteractionBox*> InteractionBoxes;
 
+    std::unordered_map<std::string, Button*> ButtonsMap;
+    std::unordered_map<std::string, MassageBox*> MassageBoxesMap;
+    std::unordered_map<std::string, InteractionBox*> InteractionBoxesMap;
+
     public:
     Font* font;
 
@@ -143,19 +148,23 @@ class UI
 
     void CheckInteractionBoxes(SDL_Event& event);
 
+    Button* GetButtonByName(const std::string &name);
+    MassageBox* GetMassageBoxByName(const std::string &name);
+    InteractionBox* GetInteractionBoxByName(const std::string &name);
+
     void SetUIElementColor(const std::string& name, unsigned char R, unsigned char G, unsigned char B);
 
     void SetUIElementBorderColor(const std::string& name, unsigned char R, unsigned char G, unsigned char B);
 
     void ManageInput(SDL_Event& event);
 
-    void DeleteButton(const std::string& name);
+    bool DeleteButton(const std::string& name);
 
-    void DeleteMassageBox(const std::string& name);
+    bool DeleteMassageBox(const std::string& name);
 
-    void DeleteInteractionBox(const std::string& name);
+    bool DeleteInteractionBox(const std::string& name);
 
-    void DeleteAnyButton(const std::string& name);
+    bool DeleteAnyButton(const std::string& name);
 
     void Render();
 
@@ -170,12 +179,6 @@ class UI
     std::vector<MassageBox*>& GetMassageBoxes();
 
     std::vector<InteractionBox*>& GetInteractionBoxes();
-
-    Button* GetButtonByName(const std::string& name);
-
-    MassageBox* GetMassageBoxByName(const std::string& name);
-
-    InteractionBox* GetInterctionBoxByName(const std::string& name);
 
     void ClearAllButtons();
 

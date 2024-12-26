@@ -119,9 +119,12 @@ void Program::GameConstant() {
 
 void Program::EventsConstant() {
     while (SDL_PollEvent(&event)) {
+        uiManager->OnClick(event);
         ui->ManageInput(event);
+
     }
     uiManager->ManageInput(event);
+    Global::inputDelay++;
 }
 
 void Program::MovementConstant() {
