@@ -8,14 +8,15 @@
 #include "TextureManager.h"
 #include "unordered_map"
 
+
 class TemplateUIElement {
     private:
     SDL_Texture* texture;
     SDL_Rect rectangle;
     std::string name;
     std::string text;
-    int textSize;
-    int textStep;
+    float textScale = 1.0f;
+    int interLine = 20;
 
     bool border = false;
 
@@ -28,6 +29,8 @@ class TemplateUIElement {
     unsigned char buttonColor[3] = { 0,0,0 };
 
     unsigned char borderRGB[3] = { 0,0,0 };
+
+    Font* font = nullptr;
 
     public:
 
@@ -44,10 +47,10 @@ class TemplateUIElement {
     std::string& GetText();
     void SetText(std::string temptext);
 
-    int GetTextSize();
-    void SetTextSize(int temp);
-    int GetTextStep();
-    void SetTextStep(int temp);
+    float GetTextScale();
+    void SetTextScale(float temp);
+    int GetInterLine();
+    void SetInterLine(int temp);
 
     bool GetBorder();
 
@@ -65,13 +68,21 @@ class TemplateUIElement {
     bool GetTransparent();
     void SetTransparent(bool temp);
 
+    Font* GetFont();
+
+    void SetFont(Font *font);
+
     void SetButtonColor(unsigned char R, unsigned char G, unsigned char B);
 
     void SetBorderRGB(unsigned char R, unsigned char G, unsigned char B);
 
+    void SetFontColor(unsigned char R, unsigned char G, unsigned char B);
+
     void RenderItslelf(SDL_Renderer* renderer);
 
     void RenderBorder(SDL_Renderer* renderer);
+
+    void RenderText(SDL_Renderer* renderer);
 
 };
 
@@ -87,21 +98,10 @@ class InteractionBox : public TemplateUIElement {
 class MassageBox : public TemplateUIElement {
     private:
     bool turnedOn = false;
-    bool autoFormating = false;
-    int formatingStep = 0;
     public:
-
-    int formatingXtune = 0;
-    int formatingYtune = 0;
     void CheckInteraction(SDL_Event& event);
 
     void ManageTextInput(SDL_Event& event);
-
-    bool GetAutoFormating();
-
-    void SetAutoFormating(bool value);
-
-
 };
 
 
@@ -125,22 +125,20 @@ class UI
     std::unordered_map<std::string, InteractionBox*> InteractionBoxesMap;
 
     public:
-    Font* font;
+    FontManager* fontManager;
 
-    UI(SDL_Renderer* renderer, bool setUpFont);
+    UI(SDL_Renderer* renderer);
 
     void LoadTextures();
 
-    void SetFontColor(const unsigned char R, const unsigned char G, const unsigned char B);
+    void CreateButton(std::string name, int x, int y, int w, int h, SDL_Texture* texture,Font *font = nullptr,
+        std::string text = "", float textScale = 1.0f, int interline = 20, int textStartX = 0, int textStartY = 0, int borderThickness = 0);
 
-    void CreateButton(std::string name, int x, int y, int w, int h, SDL_Texture* texture,
-        std::string text = "", int textSize = 20, int textStep = 18, int textStartX = 0, int textStartY = 0, int borderThickness = 0);
+    void CreateMassageBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font = nullptr,
+        std::string text = "", float textScale = 1.0f, int interline = 20, int textStartX = 0, int textStartY = 0, int borderThickness = 0);
 
-    void CreateMassageBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture,
-        int textSize = 20, int textStep = 18, int textStartX = 0, int textStartY = 0, int borderThickness = 0, bool autoFormating = false);
-
-    void CreateInteractionBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture,
-        std::string text = "", int textSize = 20, int textStep = 18, int textStartX = 0, int textStartY = 0, int borderThickness = 0);
+    void CreateInteractionBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font = nullptr,
+        std::string text = "", float textScale = 1.0f, int interline = 20, int textStartX = 0, int textStartY = 0, int borderThickness = 0);
 
     void CheckMasageBoxInteraction(SDL_Event& event);
 

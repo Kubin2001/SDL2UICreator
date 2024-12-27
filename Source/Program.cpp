@@ -26,23 +26,26 @@ void Program::Start() {
     TextureManager::Start(renderer);
     LoadTextures();
 
-    ui = std::make_unique<UI>(renderer,1);
+    ui = std::make_unique<UI>(renderer);
     uiManager = std::make_unique<UIManager>(ui.get());
     ui->LoadTextures();
-    ui->font->LoadText(29, 29);
-    ui->font->SetTexture(TextureManager::GetTextureByName("fontStandard"));
-    ui->SetFontColor(255, 255, 255);
+    ui->fontManager->CreateFont("fontStd",TextureManager::GetTextureByName("fontStd"),"Textures/Interface/Fonts/fontStd.json");
+    
 
-    ui->CreateButton("RightPanel", Global::windowWidth - 300, 0, 300, Global::windowHeight, nullptr, "", 0, 0, 0, 0, 2);
+    ui->CreateButton("RightPanel", Global::windowWidth - 300, 0, 300, Global::windowHeight, nullptr,
+        ui->fontManager->GetFont("fontStd"), "", 1.0, 0, 0, 0, 2);
     ui->SetUIElementBorderColor("RightPanel", 135, 206, 250);
 
-    ui->CreateInteractionBox("ButtonCreator", Global::windowWidth - 290, 10, 50, 50, nullptr, "CBtn", 8, 6, 2, 2, 2);
+    ui->CreateInteractionBox("ButtonCreator", Global::windowWidth - 290, 10, 50, 50, nullptr,
+        ui->fontManager->GetFont("fontStd"), "cBtn", 1.0, 10, 2, 2, 2);
     ui->SetUIElementBorderColor("ButtonCreator", 135, 206, 250);
 
-    ui->CreateInteractionBox("MassageBoxCreator", Global::windowWidth - 230, 10, 50, 50, nullptr, "CMsB", 8, 6, 2, 2, 2);
+    ui->CreateInteractionBox("MassageBoxCreator", Global::windowWidth - 230, 10, 50, 50, nullptr,
+        ui->fontManager->GetFont("fontStd"), "", 1.0, 10, 2, 2, 2);
     ui->SetUIElementBorderColor("MassageBoxCreator", 135, 206, 250);
 
-    ui->CreateInteractionBox("InteractionBoxCreator", Global::windowWidth - 170, 10, 50, 50, nullptr, "CIB", 8, 6, 2, 2, 2);
+    ui->CreateInteractionBox("InteractionBoxCreator", Global::windowWidth - 170, 10, 50, 50, nullptr,
+        ui->fontManager->GetFont("fontStd"), "", 1.0, 10, 2, 2, 2);
     ui->SetUIElementBorderColor("InteractionBoxCreator", 135, 206, 250);
 }
 

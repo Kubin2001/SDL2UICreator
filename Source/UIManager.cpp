@@ -12,7 +12,8 @@ void UIManager::ManageInput(SDL_Event& event) {
         std::string btnName = "Button" + std::to_string(idCounter);
         int x, y;
         SDL_GetMouseState(&x, &y);
-        ui->CreateButton(btnName, x, y, 100, 100, nullptr, "Button", 20, 18, 0, 0, 2);
+        ui->CreateButton(btnName, x, y, 100, 100, nullptr, ui->fontManager->GetFont("fontStd"),
+            "Button", 1.0f, 20, 5, 7, 3);
         ui->SetUIElementBorderColor(btnName, 135, 206, 250);
         selectedButton = ui->GetButtonByName(btnName);
         createdButtons.emplace_back(selectedButton);
