@@ -41,10 +41,10 @@ bool Font::LoadTextInfo(const std::string& jsonPath) {
                 sourceRectangles[std::stoi(key)].y = value["y"].get<int>();
                 sourceRectangles[std::stoi(key)].w = value["width"].get<int>();
                 sourceRectangles[std::stoi(key)].h = value["height"].get<int>();
+                if (standardInterLine < sourceRectangles[std::stoi(key)].h) {
+                    standardInterLine = sourceRectangles[std::stoi(key)].h;
+                }
             }
-
-
-
         }
 
         /*for (size_t i = 0; i < sourceRectangles.size(); i++)
@@ -53,6 +53,7 @@ bool Font::LoadTextInfo(const std::string& jsonPath) {
                 << " W: " << sourceRectangles[i].w << " H: " << sourceRectangles[i].h << "\n";
 
         }*/
+        std::cout << "InterLine: " << standardInterLine << "\n";
 
     }
     else
@@ -85,7 +86,14 @@ void Font::RenderText(SDL_Renderer* renderer, std::string text, int x, int y, fl
             }
         }
     }
-    rectangle.x = temp;
+}
+
+int Font::GetStandardInterline() {
+    return standardInterLine;
+}
+
+void Font::SetStandardInterline(int temp) {
+    standardInterLine = temp;
 }
 
 

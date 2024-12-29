@@ -116,9 +116,9 @@ void TemplateUIElement::SetBorderRGB(unsigned char R, unsigned char G, unsigned 
 void TemplateUIElement::SetFontColor(unsigned char R, unsigned char G, unsigned char B) {
     if (font != nullptr) {
         if (font->GetTexture() != nullptr) {
-            SDL_SetTextureColorMod(font->GetTexture(), 255, 255, 255); // Reset tak czy siak niewa¿ne czy bia³e czy nie
-            SDL_SetTextureColorMod(font->GetTexture(), R, G, B);
-
+            fontRGB[0] = R;
+            fontRGB[1] = G;
+            fontRGB[2] = B;
         }
     }
 }
@@ -135,7 +135,7 @@ void TemplateUIElement::RenderItslelf(SDL_Renderer* renderer) {
 
 void TemplateUIElement::RenderBorder(SDL_Renderer* renderer) {
     SDL_Rect leftLine{ rectangle.x, rectangle.y, borderThickness, rectangle.h };
-    SDL_Rect upperLine{rectangle.x, rectangle.y, rectangle.w, borderThickness};
+    SDL_Rect upperLine{ rectangle.x, rectangle.y, rectangle.w, borderThickness };
     SDL_Rect rightLine{ (rectangle.x + rectangle.w - borderThickness), rectangle.y, borderThickness, rectangle.h };
     SDL_Rect downLine{ rectangle.x, (rectangle.y + rectangle.h - borderThickness), rectangle.w, borderThickness };
 
@@ -149,8 +149,11 @@ void TemplateUIElement::RenderBorder(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, Global::defaultDrawColor[0], Global::defaultDrawColor[1], Global::defaultDrawColor[2], 255);
 }
 
-void TemplateUIElement::RenderText(SDL_Renderer *renderer) {
+void TemplateUIElement::RenderText(SDL_Renderer* renderer) {
     if (font != nullptr) {
+
+        SDL_SetTextureColorMod(font->GetTexture(), 255, 255, 255); // Reset tak czy siak niewa¿ne czy bia³e czy nie
+        SDL_SetTextureColorMod(font->GetTexture(), fontRGB[0], fontRGB[1], fontRGB[2]);
         font->RenderText(renderer, text, rectangle.x,
             rectangle.y, textScale, interLine
             , textStartX, textStartY);
@@ -178,6 +181,11 @@ void MassageBox::ManageTextInput(SDL_Event& event) {
 
         if (event.type == SDL_TEXTINPUT) {
             GetText() += event.text.text;
+        }
+        if (event.type == SDL_KEYDOWN) {
+            if (event.key.keysym.sym == SDLK_RETURN) {
+                GetText() += '\n';
+            }
         }
 
         if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_BACKSPACE && GetText().length() > 0) {
@@ -232,7 +240,7 @@ void UI::Render() {
 
 
 void UI::CreateButton(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font,
-    std::string text, float textScale, int interline, int textStartX, int textStartY, int borderThickness) {
+    std::string text, float textScale, int textStartX, int textStartY, int borderThickness) {
 
     Buttons.emplace_back(new Button());
     Buttons.back()->SetName(name);
@@ -248,8 +256,10 @@ void UI::CreateButton(std::string name, int x, int y, int w, int h, SDL_Texture*
 
     Buttons.back()->SetText(text);
     Buttons.back()->SetTextScale(textScale);
-    Buttons.back()->SetInterLine(interline);
     Buttons.back()->SetFont(font);
+    if (font != nullptr) {
+        Buttons.back()->SetInterLine(font->GetStandardInterline());
+    }
 
     Buttons.back()->SetTextStartX(textStartX);
 
@@ -260,11 +270,11 @@ void UI::CreateButton(std::string name, int x, int y, int w, int h, SDL_Texture*
         Buttons.back()->SetBorder(true);
     }
 
-    ButtonsMap.emplace(Buttons.back()->GetName(),Buttons.back());
+    ButtonsMap.emplace(Buttons.back()->GetName(), Buttons.back());
 }
 
 void UI::CreateMassageBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font,
-    std::string text, float textScale, int interline, int textStartX, int textStartY, int borderThickness) {
+    std::string text, float textScale, int textStartX, int textStartY, int borderThickness) {
 
     MassageBoxes.emplace_back(new MassageBox());
     MassageBoxes.back()->SetName(name);
@@ -281,8 +291,10 @@ void UI::CreateMassageBox(std::string name, int x, int y, int w, int h, SDL_Text
     MassageBoxes.back()->SetText("");
 
     MassageBoxes.back()->SetTextScale(textScale);
-    MassageBoxes.back()->SetInterLine(interline);
     MassageBoxes.back()->SetFont(font);
+    if (font != nullptr) {
+        MassageBoxes.back()->SetInterLine(font->GetStandardInterline());
+    }
 
     MassageBoxes.back()->SetTextStartX(textStartX);
 
@@ -300,7 +312,7 @@ void UI::CreateMassageBox(std::string name, int x, int y, int w, int h, SDL_Text
 }
 
 void UI::CreateInteractionBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font,
-    std::string text, float textScale, int interline, int textStartX, int textStartY, int borderThickness) {
+    std::string text, float textScale, int textStartX, int textStartY, int borderThickness) {
 
     InteractionBoxes.emplace_back(new InteractionBox());
     InteractionBoxes.back()->SetName(name);
@@ -317,8 +329,10 @@ void UI::CreateInteractionBox(std::string name, int x, int y, int w, int h, SDL_
     InteractionBoxes.back()->SetText(text);
 
     InteractionBoxes.back()->SetTextScale(textScale);
-    InteractionBoxes.back()->SetInterLine(interline);
     InteractionBoxes.back()->SetFont(font);
+    if (font != nullptr) {
+        InteractionBoxes.back()->SetInterLine(font->GetStandardInterline());
+    }
 
     InteractionBoxes.back()->SetTextStartX(textStartX);
 
@@ -367,7 +381,7 @@ Button* UI::GetButtonByName(const std::string& name) {
         return nullptr;
     }
 }
-MassageBox* UI::GetMassageBoxByName(const std::string &name) {
+MassageBox* UI::GetMassageBoxByName(const std::string& name) {
     auto msBoxFind = MassageBoxesMap.find(name);
     if (msBoxFind != MassageBoxesMap.end()) {
         return msBoxFind->second;
@@ -390,8 +404,8 @@ InteractionBox* UI::GetInteractionBoxByName(const std::string& name) {
 
 void UI::SetUIElementColor(const std::string& name, unsigned char R, unsigned char G, unsigned char B) {
     Button* button = GetButtonByName(name);
-    if(button != nullptr){ 
-        button->SetButtonColor(R, G, B); 
+    if (button != nullptr) {
+        button->SetButtonColor(R, G, B);
         return;
     }
 
@@ -424,6 +438,26 @@ void UI::SetUIElementBorderColor(const std::string& name, unsigned char R, unsig
     InteractionBox* interactionBox = GetInteractionBoxByName(name);
     if (interactionBox != nullptr) {
         interactionBox->SetBorderRGB(R, G, B);
+        return;
+    }
+}
+
+void UI::SetUIElementFontColor(const std::string& name, unsigned char R, unsigned char G, unsigned char B) {
+    Button* button = GetButtonByName(name);
+    if (button != nullptr) {
+        button->SetFontColor(R, G, B);
+        return;
+    }
+
+    MassageBox* massageBox = GetMassageBoxByName(name);
+    if (massageBox != nullptr) {
+        massageBox->SetFontColor(R, G, B);
+        return;
+    }
+
+    InteractionBox* interactionBox = GetInteractionBoxByName(name);
+    if (interactionBox != nullptr) {
+        interactionBox->SetFontColor(R, G, B);
         return;
     }
 }
@@ -543,7 +577,13 @@ std::vector<InteractionBox*>& UI::GetInteractionBoxes() {
     return InteractionBoxes;
 }
 
+void UI::CreateFont(const std::string& name, SDL_Texture* texture, const std::string& jsonPath) {
+    fontManager->CreateFont(name, texture, jsonPath);
+}
 
+Font* UI::GetFont(const std::string& name) {
+    return fontManager->GetFont(name);
+}
 
 void UI::ClearAllButtons() {
     for (auto& it : Buttons) {
