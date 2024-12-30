@@ -81,7 +81,7 @@ void Font::RenderText(SDL_Renderer* renderer, std::string text, int x, int y, fl
             }
             else
             {
-                rectangle.y += interline;
+                rectangle.y += interline * scale;
                 rectangle.x = temp;
             }
         }

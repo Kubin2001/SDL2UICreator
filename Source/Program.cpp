@@ -33,9 +33,13 @@ void Program::Start() {
     ui->CreateFont("arial12px", TextureManager::GetTextureByName("arial12px"), "Textures/Interface/Fonts/arial12px.json");
     
 
-    ui->CreateButton("RightPanel", Global::windowWidth - 300, 0, 300, Global::windowHeight, nullptr,
-        ui->GetFont("arial20px"), "", 1.0, 0, 0, 2);
-    ui->SetUIElementBorderColor("RightPanel", 135, 206, 250);
+    ui->CreateButton("RightPanelUp", Global::windowWidth - 300, 0, 300, 150, nullptr,
+        nullptr, "", 1.0, 0, 0, 2);
+    ui->SetUIElementBorderColor("RightPanelUp", 135, 206, 250);
+
+    ui->CreateButton("RightPanelDown", Global::windowWidth - 300, 150, 300, Global::windowHeight - 150, nullptr,
+        nullptr, "", 1.0, 0, 0, 2);
+    ui->SetUIElementBorderColor("RightPanelDown", 135, 206, 250);
 
     ui->CreateInteractionBox("ButtonCreator", Global::windowWidth - 290, 10, 50, 50, nullptr,
         ui->GetFont("arial20px"), "cBtn", 1.0, 2, 2, 2);
@@ -63,7 +67,6 @@ void Program::GameLogic() {
 
 void Program::EventsLogic() {
     Global::frameCounter++;
-
     FiveTickEvents();
 }
 
@@ -128,6 +131,7 @@ void Program::EventsConstant() {
 
     }
     uiManager->ManageInput(event);
+    uiManager->ManageRightPanelInput();
     Global::inputDelay++;
 }
 
