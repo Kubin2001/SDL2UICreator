@@ -7,3 +7,6 @@
 jego funkcje sa wywoływane bezpośrenio prze UI
 - Automatyczna Interlinia dostosowuje sie do skali
 - Dodano podtawową modyfikację przycisku
+
+0.02
+- Dodano wszystkie postwawowe możliwości modyfikacji przycisków
